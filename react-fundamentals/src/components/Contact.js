@@ -1,6 +1,8 @@
 import React from 'react';
 import ContactInfo from './ContactInfo';
 import ContactDetails from './ContactDetails';
+import update from 'react-addons-update';
+import ContactCreate from './ContactCreate,';
 
 export default class Contact extends React.Component {
     
@@ -26,6 +28,10 @@ export default class Contact extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);   // 임의의 메소드를 만들때에는 꼭 this와 bind를 해주어야 함
         this.handleClick = this.handleClick.bind(this);
+
+        this.handleCreate = this.handleCreate.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
     handleChange(e) {   // 이름은 아무거나 해도 상관없다.
@@ -40,6 +46,34 @@ export default class Contact extends React.Component {
         });
 
         console.log(key, 'is selected');
+    }
+
+    handleCreate(contact) {
+        this.setState({
+            contactData: update(this.state.contactData, { $push: [contact]})
+        });
+    }
+
+    handleRemove() {
+        this.setState({
+            contactData: update(this.state.contactData,
+                { $splice: [[this.state.selectedKey, 1]]}
+            ),
+            selectedKey: -1
+        });
+    }
+
+    handleEdit(name, phone) {
+        this.setState({
+            contactData: update(this.state.contactData,
+                {
+                    [this.state.selectedKey]: {
+                        name: { $set: name },
+                        phone: { $set: phone }
+                    }
+                }
+            )
+        })
     }
     
     render() {
@@ -71,6 +105,9 @@ export default class Contact extends React.Component {
                 <ContactDetails
                     isSelected={this.state.selectedKey != -1}
                     contact={this.state.contactData[this.state.selectedKey]}/>
+                <ContactCreate
+                    onCreate={this.handleCreate}
+                />
             </div>
         );
     }
