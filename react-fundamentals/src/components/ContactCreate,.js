@@ -9,6 +9,7 @@ export default class ContactCreate extends React.Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
     handleChange(e) {
@@ -29,6 +30,14 @@ export default class ContactCreate extends React.Component {
             name: '',
             phone: ''
         });
+
+        this.nameInput.focus();
+    }
+
+    handleKeyPress(e) {
+        if(e.charCode===13) {
+            this.handleClick();
+        }
     }
 
     render() {
@@ -42,6 +51,10 @@ export default class ContactCreate extends React.Component {
                         placeholder="name"
                         value={this.state.name}
                         onChange={this.handleChange}
+                        ref={(ref) => { this.nameInput = ref }}
+                        // render 메소드 내부랑 constructor 메소드 내부에서는 ref에 접근불가
+                        // ref를 쓰기전에는 꼭 ref를 쓰지 않고 다른 방법으로 기능이 구현 가능한지 알아보고 사용할것
+                        // focus 의 경우는 ref 말고는 구현방법이 달리 없음
                     />
                     <input 
                         type="text" 
@@ -49,6 +62,7 @@ export default class ContactCreate extends React.Component {
                         placeholder="phone"
                         value={this.state.phone}
                         onChange={this.handleChange}
+                        onKeyPress={this.handleKeyPress}
                     />
                 </p>
                 <button onClick={this.handleClick}>Create</button>
